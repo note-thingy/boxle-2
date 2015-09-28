@@ -5,7 +5,7 @@
     "body-parser": "^1.14.1",
     "connect-mongo": "^0.8.2",
     "cookie-parser": "^1.4.0",
-    "express": "3.x",
+    "express": "4.x",
     "express-session": "^1.11.3",
     "harp": "*",
     "method-override": "^2.3.5",

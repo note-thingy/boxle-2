@@ -40,12 +40,19 @@ app.use(function(req,res,next){
 });
 //END   X-Clacks-Overhead
 
+app.use(function(req,res,next){
+  req.sess = req.session;
+  next()
+})
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(__dirname + "/public"));
 app.use(harp.mount(__dirname + "/public"));
 
-app.listen(process.env.PORT||3000);
+// route as normal
+app.use("/api/sesscount-v1", require("./routes/sesscount-v1"));
+// end routes
 
-// routes as normal
+app.listen(process.env.PORT||3000);
