@@ -141,7 +141,7 @@ app.get('/restricted', passwordless.restricted(),
 });
 
 // route as normal
-app.use("/api/sesscount-v1", require("./routes/sesscount-v1"));
+app.use("/api/v1/documents", passwordless.restricted(), require("./routes/v1/documents"));
 
 app.get('/api/v1/me', passwordless.restricted(),
  function(req, res) {
