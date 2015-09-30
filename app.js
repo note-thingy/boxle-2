@@ -101,9 +101,27 @@ app.post('/sendtoken',
                else
                   callback(null, null)
           })*/
+          var db = req.db;
+          var users = req.db.collection('users');
+          users.findOne({ email: user },function(err, doc) {
+            if(doc){
+              console.log(JSON.stringify(doc));
+              callback(null, JSON.stringify(doc));
+            }else{
+              users.insert({email: user}, function(err, doc) {
+                if(err){
+                  console.log(err);
+                  res.send("Error adding user. \n"+err);  
+                }else{
+                  console.log(JSON.stringify(doc));
+                  callback(null, JSON.stringify(doc));
+                }
+              });
+            }
+          });
           // but you could also do the following 
           // if you want to allow anyone:
-           callback(null, user);
+          // callback(null, user);
         }),
     function(req, res) {
        // success!
@@ -127,7 +145,8 @@ app.use("/api/sesscount-v1", require("./routes/sesscount-v1"));
 
 app.get('/api/v1/me', passwordless.restricted(),
  function(req, res) {
-  res.json(req.user);
+  //console.log(req.user);
+  res.json(JSON.parse(req.user));
 });
 // end routes
 
