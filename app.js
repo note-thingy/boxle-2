@@ -62,14 +62,14 @@ passwordless.init(new MongoStore(process.env.DBURL));
 // Set up a delivery service
 passwordless.addDelivery(
     function(tokenToSend, uidToSend, recipient, callback) {
-        var host = 'localhost:3000';
+        var host = process.env.HOST;
         smtpServer.send({
-            text:    'Hello!\nAccess your account here: http://' 
+            text:    'Hello!\nAccess your account here: ' 
             + host + '/accept?token=' + tokenToSend + '&uid=' 
             + encodeURIComponent(uidToSend), 
             from:    process.env.EMAILUSER, 
             to:      recipient,
-            subject: 'Token for ' + host
+            subject: 'Login token for ' + host
         }, function(err, message) { 
             if(err) {
                 console.log(err);
@@ -109,16 +109,26 @@ app.post('/sendtoken',
        // success!
           res.redirect('/sent');
 });
+
+app.get("/logout", passwordless.logout(),
+  function(req,res){
+    res.redirect("/loggedout")
+});
 //END   PASSWORDLESS
 
 /* GET restricted site. */
 app.get('/restricted', passwordless.restricted(),
  function(req, res) {
-  res.send("Hey. You are logged in.");
+  res.send("Hey " + req.user + ". You are logged in.");
 });
 
 // route as normal
 app.use("/api/sesscount-v1", require("./routes/sesscount-v1"));
+
+app.get('/api/v1/me', passwordless.restricted(),
+ function(req, res) {
+  res.json(req.user);
+});
 // end routes
 
 app.listen(process.env.PORT||3000);
