@@ -10,7 +10,6 @@
     "harp": "*",
     "method-override": "^2.3.5",
     "mongodb": "^2.0.43",
-    "mongojs": "^1.3.0",
     "morgan": "^1.6.1"
   },
   "scripts": {
