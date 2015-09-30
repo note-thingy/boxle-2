@@ -14,6 +14,7 @@ var app = express();
 /* MONGODB SETUP */
 // DOCS ARE HERE https://github.com/mongodb/node-mongodb-native/blob/master/Readme.md
 if(process.env.DBURL){
+console.log("Launching with DB.");
 app.use(function (req, res, next){
  MongoClient.connect(process.env.DBURL, function(err, db) {
    if(err) throw err;
@@ -27,6 +28,7 @@ app.use(session({
   store:  new connectMongoStore({ url: process.env.DBURL })
 }));
 }else{
+console.log("Launching without DB.");
 app.use(session({
   secret: 'keyboard cat'
 }));
