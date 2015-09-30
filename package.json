@@ -1,16 +1,21 @@
 {
   "name": "boxle",
   "version": "0.2.0",
+  "description": "Some notes, etc",
+  "repository": "http://github.com/isaacrg/boxle-2",
   "dependencies": {
     "body-parser": "^1.14.1",
     "connect-mongo": "^0.8.2",
     "cookie-parser": "^1.4.0",
+    "emailjs": "^1.0.0",
     "express": "4.x",
     "express-session": "^1.11.3",
     "harp": "*",
     "method-override": "^2.3.5",
     "mongodb": "^2.0.43",
-    "morgan": "^1.6.1"
+    "morgan": "^1.6.1",
+    "passwordless": "^1.1.0",
+    "passwordless-mongostore-bcrypt-node": "^0.1.1"
   },
   "scripts": {
     "start": "node app"

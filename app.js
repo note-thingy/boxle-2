@@ -9,12 +9,20 @@ var connectMongoStore = require('connect-mongo')(session);
 var mongodb = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
 var format = require('util').format;
+var passwordless = require('passwordless');
+var MongoStore = require('passwordless-mongostore-bcrypt-node');
+var email   = require("emailjs");
 var app = express();
+
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.static(__dirname + "/public"));
+app.use(harp.mount(__dirname + "/public"));
 
 /* MONGODB SETUP */
 // DOCS ARE HERE https://github.com/mongodb/node-mongodb-native/blob/master/Readme.md
-if(process.env.DBURL){
-console.log("Launching with DB.");
 app.use(function (req, res, next){
  MongoClient.connect(process.env.DBURL, function(err, db) {
    if(err) throw err;
@@ -27,12 +35,10 @@ app.use(session({
   secret: 'keyboard cat',
   store:  new connectMongoStore({ url: process.env.DBURL })
 }));
-}else{
-console.log("Launching without DB.");
-app.use(session({
-  secret: 'keyboard cat'
-}));
-}
+app.use(function(req,res,next){
+  req.sess = req.session;
+  next()
+})
 /* END MONGODB SETUP */
 
 //START X-Clacks-Overhead
@@ -42,17 +48,74 @@ app.use(function(req,res,next){
 });
 //END   X-Clacks-Overhead
 
-app.use(function(req,res,next){
-  req.sess = req.session;
-  next()
-})
+//START PASSWORDLESS
+var smtpServer  = email.server.connect({
+   user:    process.env.EMAILUSER, 
+   password: process.env.EMAILPASS, 
+   host:    process.env.EMAILHOST, 
+   ssl:     true
+});
 
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+// MongoDB TokenStore
+passwordless.init(new MongoStore(process.env.DBURL));
 
-app.use(express.static(__dirname + "/public"));
-app.use(harp.mount(__dirname + "/public"));
+// Set up a delivery service
+passwordless.addDelivery(
+    function(tokenToSend, uidToSend, recipient, callback) {
+        var host = 'localhost:3000';
+        smtpServer.send({
+            text:    'Hello!\nAccess your account here: http://' 
+            + host + '/accept?token=' + tokenToSend + '&uid=' 
+            + encodeURIComponent(uidToSend), 
+            from:    process.env.EMAILUSER, 
+            to:      recipient,
+            subject: 'Token for ' + host
+        }, function(err, message) { 
+            if(err) {
+                console.log(err);
+            }
+            callback(err);
+        });
+});
+
+app.use(passwordless.sessionSupport());
+app.use("/accept", passwordless.acceptToken({ successRedirect: '/accepted'}),
+  function(req,res){
+    res.send("Accept failure")
+});
+
+/* GET login screen. */
+/*app.get('/login', function(req, res) {
+   res.r('login');
+});*/
+
+/* POST login details. */
+app.post('/sendtoken', 
+    passwordless.requestToken(
+        // Turn the email address into an user ID
+        function(user, delivery, callback, req) {
+            // usually you would want something like:
+           /* User.find({email: user}, callback(ret) {
+               if(ret)
+                  callback(null, ret.id)
+               else
+                  callback(null, null)
+          })*/
+          // but you could also do the following 
+          // if you want to allow anyone:
+           callback(null, user);
+        }),
+    function(req, res) {
+       // success!
+          res.redirect('/sent');
+});
+//END   PASSWORDLESS
+
+/* GET restricted site. */
+app.get('/restricted', passwordless.restricted(),
+ function(req, res) {
+  res.send("Hey. You are logged in.");
+});
 
 // route as normal
 app.use("/api/sesscount-v1", require("./routes/sesscount-v1"));
