@@ -105,7 +105,7 @@ app.post('/sendtoken',
           var users = req.db.collection('users');
           users.findOne({ email: user },function(err, doc) {
             if(doc){
-            	callback(null, doc._id));
+            	callback(null, doc._id);
             }else{
               users.insert({email: user}, function(err, doc) {
                 if(err){
