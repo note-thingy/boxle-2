@@ -144,7 +144,7 @@ app.use("/api/v1/documents", passwordless.restricted(), require("./routes/v1/doc
 app.get('/api/v1/me', passwordless.restricted(),
  function(req, res) {
   //console.log(req.user);
-  res.json(JSON.parse(req.user));
+  res.json(req.user);
 });
 // end routes
 
