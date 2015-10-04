@@ -5,13 +5,13 @@ router.post("/new", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
   var newdoc = {};
-  newdoc.title = req.query.title;
+  newdoc.title = req.body.title;
   newdoc.location = "";
   newdoc.content = "";
-  newdoc.type = req.query.type || "text/rich-html-note";
+  newdoc.type = req.body.type || "text/rich-html-note";
   newdoc.author = req.user;
   newdoc.owner = req.user;
-  newdoc.tags = []
+  newdoc.tags = [];
   newdoc.dateupdated = new Date();
   newdoc.datecreated = new Date();
   documents.insert(newdoc, function(err, doc) {
@@ -27,7 +27,7 @@ router.post("/new", function(req,res){
 router.get("/my", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
-  documents.find({owner: req.user}, {cont}).toArray(function(err, docs) {
+  documents.find({owner: req.user}, {title: true, dateupdated: true, tags: true}).toArray(function(err, docs) {
     if(err){
       console.log(err);
       res.json({status: "error", messsage: "Error occured. \n"+err})
