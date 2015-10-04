@@ -7,6 +7,7 @@ router.post("/new", function(req,res){
   var newdoc = {};
   newdoc.title = req.query.title;
   newdoc.location = "";
+  newdoc.content = "";
   newdoc.type = req.query.type || "text/rich-html-note";
   newdoc.author = req.user;
   newdoc.owner = req.user;
@@ -26,7 +27,7 @@ router.post("/new", function(req,res){
 router.get("/my", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
-  documents.find({owner: req.user}).toArray(function(err, docs) {
+  documents.find({owner: req.user}, {cont}).toArray(function(err, docs) {
     if(err){
       console.log(err);
       res.json({status: "error", messsage: "Error occured. \n"+err})
