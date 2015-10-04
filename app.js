@@ -14,6 +14,7 @@ var MongoStore = require('passwordless-mongostore-bcrypt-node');
 var email   = require("emailjs");
 var app = express();
 
+app.use(logger());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
