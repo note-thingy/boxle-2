@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>App V1</title>
+
+  <link rel="stylesheet" href="/css/corpus.css">
+</head>
+
+  <body class="row fullscreen">
+    
+    <nav class="sidebar bg-black p2 h100 fixed scroll-vertical no-scrollbar">
+      <h1 class="m0 color-white"><a class="no-underline" href="#/home">Boxle</a><span class="alpha-badge fs-small italic color-accent">Alpha</span></h1>
+      <p class="color-midgrey">An internet experiment.</p>
+      <ul class="list-style-none lh9 bt1 border-darkgrey mt2 pt2">
+        <li><a href="#/home">Home</a></li>
+        <li><a href="#/my">All files</a></li>
+        <li><a href="#/me">Profile</a></li>
+      </ul>
+    </nav>
+    <main id="main" class="column overflow-hidden">
+      
+    </main>
+    <script type="text/html" id="template-home">
+      <section class="section-padding">
+        This is an experimental website, providing a virtual document service, among other things.
+      </section>
+    </script>
+    <script type="text/html" id="template-files">
+      <section class="section-padding">
+        <h4>Create a new document</h4>
+        
+          Title: 
+          <input id="newdoctitle" name="title" type="text">
+          <input type="submit" onclick="newDoc()">
+        
+      </section>
+      <section class="section-padding">
+        {{ for(var prop in it.data) { }}
+        <div>{{=it.data[prop].title}}</div>
+        {{ } }}
+        <span class="w50 columns"></span>
+      </section>
+    </script>
+    <script type="text/html" id="template-profile">
+      
+    </script>
+    <script>
+    var divMain = document.getElementById("main");
+    var setMain = function(c){
+      divMain.innerHTML = c;
+    }
+    var tmplHome = document.getElementById("template-home").innerHTML;
+    </script>
+    <script src="js/routie.min.js"></script>
+    <script src="js/zepto.min.js"></script>
+    <script src="js/doT.min.js"></script>
+    <script>
+      var newDoc = function(){
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/documents/new',
+            data: {title: document.getElementById("newdoctitle").value},
+            success: function(data){
+              alert("New document added.")
+            },
+            error: function(xhr, type){
+              alert('Ajax error!');
+            }
+          });
+      }
+      $(function(){
+        var tmplFiles = doT.template(document.getElementById("template-files").innerHTML);
+        var tmplProfile = doT.template(document.getElementById("template-profile").innerHTML);
+        if(!window.location.hash||window.location.hash.length<2){
+          console.log("No hash on launch, sending to #/home");
+          window.location.hash="#/home"
+        }
+        routie('/home', function() {
+            setMain(tmplHome); 
+        });
+        routie('/my', function() {
+          $.ajax({
+            type: 'GET',
+            url: '/api/v1/documents/my',
+            success: function(data){
+              setMain(tmplFiles(data));
+            },
+            error: function(xhr, type){
+              alert('Ajax error!');
+            }
+          });
+        });
+        routie('/me', function() {
+            //this gets called when hash == #users
+        });
+      });
+      /*
+      $.ajax({
+        type: 'POST',
+        url: '/projects',
+        // post payload:
+        data: JSON.stringify({ name: 'Zepto.js' }),
+        contentType: 'application/json'
+      })*/
+    </script>
+  </body>
+</html>
