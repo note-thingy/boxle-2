@@ -29,19 +29,26 @@
       </section>
     </script>
     <script type="text/html" id="template-files">
-      <section class="section-padding">
-        <h4>Create a new document</h4>
-        
-          Title: 
-          <input id="newdoctitle" name="title" type="text">
-          <input type="submit" onclick="newDoc()">
-        
-      </section>
-      <section class="section-padding">
+      <section class="section-padding grid">
+        <div class="row">
+          <div id="menu-document-bar" class="w100 p1 bg-white bb3" style="display:block">
+            <a class="color-midgrey btn-tiny" href="javascript:toggleNewDoc()">Create document</a>
+          </div>
+          <div id="new-document-bar" class="w100 p1 bg-white bb3" style="display:none">
+            <h6 class="inline color-grey">Create a new document</h6>
+            Title: 
+            <input id="newdoctitle" class="bg-silver" name="title" type="text">
+            <a class="color-midgrey btn-tiny" href="javascript:newDoc()">Create document</a>
+            <a class="color-midgrey btn-tiny" href="javascript:toggleNewDoc()">Cancel</a>
+          </div>
         {{ for(var prop in it.data) { }}
-        <div>{{=it.data[prop].title}}</div>
+          <div class="w100 p1 bg-white bb3">
+          <a class="color-midgrey btn-tiny" href="javascript:editDoc('{{=it.data[prop]._id}}')">&#9998;</a>
+          <a class="color-midgrey btn-tiny" href="javascript:deleteDoc('{{=it.data[prop]._id}}')">&#9587;</a>
+          {{=it.data[prop].title}}
+          </div>
         {{ } }}
-        <span class="w50 columns"></span>
+        </div>
       </section>
     </script>
     <script type="text/html" id="template-profile">
@@ -53,6 +60,18 @@
       divMain.innerHTML = c;
     }
     var tmplHome = document.getElementById("template-home").innerHTML;
+      
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+      var toggleNewDoc = function(){
+        toggle_visibility("menu-document-bar");
+        toggle_visibility("new-document-bar");
+      }
     </script>
     <script src="js/routie.min.js"></script>
     <script src="js/zepto.min.js"></script>
