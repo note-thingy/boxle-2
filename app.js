@@ -19,9 +19,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(express.static(__dirname + "/public"));
-app.use(harp.mount(__dirname + "/public"));
-
 /* MONGODB SETUP */
 // DOCS ARE HERE https://github.com/mongodb/node-mongodb-native/blob/master/Readme.md
 app.use(function (req, res, next){
@@ -148,5 +145,12 @@ app.get('/api/v1/me', passwordless.restricted(),
   res.json(req.user);
 });
 // end routes
+
+app.use('/accepted', passwordless.restricted());
+app.use('/app', passwordless.restricted());
+
+app.use(express.static(__dirname + "/public"));
+app.use(harp.mount(__dirname + "/public"));
+
 
 app.listen(process.env.PORT||3000);
