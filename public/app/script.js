@@ -73,8 +73,8 @@ $(function() {
   deleteDoc = function(id) {
     if (deleteDocWorking) return;
     else {
-      deleteDocWorking = true;
       if (notifyConfirm("Do you wish to delete this document?")) {
+        deleteDocWorking = true;
         $.ajax({
           type: 'POST',
           url: '/api/v1/documents/delete',
