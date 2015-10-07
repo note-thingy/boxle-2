@@ -77,7 +77,7 @@ passwordless.addDelivery(
 });
 
 app.use(passwordless.sessionSupport());
-app.use("/accept", passwordless.acceptToken({ successRedirect: '/accepted'}),
+app.use("/accept", passwordless.acceptToken({ successRedirect: '/app'}),
   function(req,res){
     res.send("Accept failure")
 });
@@ -126,7 +126,7 @@ app.post('/sendtoken',
 
 app.get("/logout", passwordless.logout(),
   function(req,res){
-    res.redirect("/loggedout")
+    res.redirect("/?m=loggedout")
 });
 //END   PASSWORDLESS
 
