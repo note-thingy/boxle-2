@@ -57,7 +57,8 @@ $(function() {
         type: 'POST',
         url: '/api/v1/documents/new',
         data: {
-          title: document.getElementById("newdoctitle").value
+          title: document.getElementById("newdoctitle").value,
+          type: document.getElementById("newdoctype").value
         },
         success: function(data) {
           notify("New document added.");
