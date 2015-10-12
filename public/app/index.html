@@ -3,14 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>App V1</title>
-
   <link rel="stylesheet" href="/css/corpus.css">
 </head>
-
   <body class="row fullscreen">
-    
     <nav class="sidebar bg-black p2 h100 fixed scroll-vertical no-scrollbar">
       <h1 class="m0 color-white"><a class="no-underline" href="#/home">Boxle</a><span class="alpha-badge fs-small italic color-accent">Alpha</span></h1>
       <p class="color-midgrey">An internet experiment.</p>
@@ -43,7 +39,7 @@
           </div>
         {{ for(var prop in it.data) { }}
           <div class="w100 p1 bg-white bb3">
-          <a class="color-midgrey btn-tiny" href="javascript:editDoc('{{=it.data[prop]._id}}')">&#9998;</a>
+          <a class="color-midgrey btn-tiny" href="javascript:editDoc('{{=it.data[prop]._id}}','{{=it.data[prop].type}}')">&#9998;</a>
           <a class="color-midgrey btn-tiny" href="javascript:deleteDoc('{{=it.data[prop]._id}}')">&#9587;</a>
           {{=it.data[prop].title}}
           </div>
@@ -52,7 +48,12 @@
       </section>
     </script>
     <script type="text/html" id="template-profile">
-      
+      <section class="section-padding">
+        The profile section has not been implemented yet, though if you wish for data to be removed or modified, then email:
+        <pre>
+          isaac.reid.guest@gmail.com
+        </pre>
+      </section>
     </script>
     <script src="js/routie.min.js"></script>
     <script src="js/zepto.min.js"></script>

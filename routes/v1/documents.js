@@ -1,11 +1,15 @@
 var express = require('express');
+var sanitizeHtml = require('sanitize-html');
 var router = express.Router();
 
 router.post("/new", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
   var newdoc = {};
-  newdoc.title = req.body.title;
+  newdoc.title = sanitizeHtml(req.body.title, {
+    allowedTags: [],
+    allowedAttributes: []}
+  );
   newdoc.location = "";
   newdoc.content = "";
   newdoc.type = req.body.type || "text/rich-html-note";
@@ -27,7 +31,7 @@ router.post("/new", function(req,res){
 router.get("/my", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
-  documents.find({owner: req.user}, {title: true, dateupdated: true, tags: true}).toArray(function(err, docs) {
+  documents.find({owner: req.user}, {title: true, dateupdated: true, tags: true, type: true}).toArray(function(err, docs) {
     if(err){
       console.log(err);
       res.json({status: "error", messsage: "Error occured. \n"+err})
@@ -37,10 +41,10 @@ router.get("/my", function(req,res){
   });
 });
 
-router.get("/read", function(req,res){
+router.post("/read", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
-  documents.findOne({owner: req.user, _id: req.ObjectId(req.query.id)},function(err, doc) {
+  documents.findOne({owner: req.user, _id: req.ObjectId(req.body.id)},function(err, doc) {
     if(err){
       console.log(err);
       res.json({status: "error", messsage: "Error occured. \n"+err});
@@ -68,7 +72,11 @@ router.post("/update", function(req,res){
     }else if(!doc){
       res.json({status: "error", messsage: "Error occured. \nNo document found."});
     }else{
-      res.json({status: "success"});
+      if(req.body.r){
+        res.redirect("/"+req.body.r);
+      }else{
+        res.json({status: "success"});
+      }
     }
   });
 });

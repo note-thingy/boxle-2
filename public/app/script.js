@@ -43,7 +43,11 @@ $(function() {
   }
 
   var newDocWorking = false;
-
+  
+  editDoc = function(id,type) {
+    window.location.href="/app/editor/"+type+"/?"+id;
+  }
+  
   newDoc = function() {
     if (newDocWorking) return;
     else {
@@ -107,6 +111,6 @@ $(function() {
     loadFileList();
   });
   routie('/me', function() {
-    //this gets called when hash == #users
+    setMain(tmplProfile());
   });
 });

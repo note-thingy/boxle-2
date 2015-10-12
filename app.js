@@ -14,7 +14,7 @@ var MongoStore = require('passwordless-mongostore-bcrypt-node');
 var email   = require("emailjs");
 var app = express();
 
-app.use(logger());
+app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,6 +31,8 @@ app.use(function (req, res, next){
 });
 app.use(session({
   secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
   store:  new connectMongoStore({ url: process.env.DBURL })
 }));
 app.use(function(req,res,next){

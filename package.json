@@ -15,7 +15,8 @@
     "mongodb": "^2.0.43",
     "morgan": "^1.6.1",
     "passwordless": "^1.1.0",
-    "passwordless-mongostore-bcrypt-node": "^0.1.1"
+    "passwordless-mongostore-bcrypt-node": "^0.1.1",
+    "sanitize-html": "^1.11.0"
   },
   "scripts": {
     "start": "node app"

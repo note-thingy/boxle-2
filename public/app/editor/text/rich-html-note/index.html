@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Home &bull; A Site</title>
+    <style>
+      body {
+        font-family: 'Helvetica', 'Arial', san-serif;
+        font-size: 13px;
+        padding: 25px;
+      }
+      #content-container {
+        margin: auto;
+        width: 960px;
+      }
+      #formatting-container {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ccc;
+        padding: 5px 12px;
+      }
+      #formatting-container .ql-active,
+      #formatting-container button:hover {
+        color: #008000;
+        font-weight: bold;
+      }
+      #editor-container {
+        height: 600px;
+      }
+      #editor-wrapper {
+        border: 1px solid #aaa;
+        box-shadow: 0 0 2px 2px #ddd;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div id="content-container">
+      <div id="editor-wrapper">
+        <div id="formatting-container">
+          <button title="Return to files" class="ql-format-button" style="font-family:monospace; float: right;" onclick="goToFiles()">Return to files</button>
+          <select title="Font" class="ql-font">
+            <option value="sans-serif" selected>Sans Serif</option>
+            <option value="Georgia, serif">Serif</option>
+            <option value="Monaco, 'Courier New', monospace">Monospace</option>
+          </select>
+          <select title="Size" class="ql-size">
+            <option value="10px">Small</option>
+            <option value="13px" selected>Normal</option>
+            <option value="18px">Large</option>
+            <option value="32px">Huge</option>
+          </select>
+          <select title="Text Color" class="ql-color">
+            <option value="rgb(255, 255, 255)">White</option>
+            <option value="rgb(0, 0, 0)" selected>Black</option>
+            <option value="rgb(255, 0, 0)">Red</option>
+            <option value="rgb(0, 0, 255)">Blue</option>
+            <option value="rgb(0, 255, 0)">Lime</option>
+            <option value="rgb(0, 128, 128)">Teal</option>
+            <option value="rgb(255, 0, 255)">Magenta</option>
+            <option value="rgb(255, 255, 0)">Yellow</option>
+          </select>
+          <select title="Background Color" class="ql-background">
+            <option value="rgb(255, 255, 255)" selected>White</option>
+            <option value="rgb(0, 0, 0)">Black</option>
+            <option value="rgb(255, 0, 0)">Red</option>
+            <option value="rgb(0, 0, 255)">Blue</option>
+            <option value="rgb(0, 255, 0)">Lime</option>
+            <option value="rgb(0, 128, 128)">Teal</option>
+            <option value="rgb(255, 0, 255)">Magenta</option>
+            <option value="rgb(255, 255, 0)">Yellow</option>
+          </select>
+          <select title="Text Alignment" class="ql-align">
+            <option value="left" selected>Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+            <option value="justify">Justify</option>
+          </select>
+          <button title="Bold" class="ql-format-button ql-bold">B</button>
+          <button title="Italic" class="ql-format-button ql-italic">I</button>
+          <button title="Underline" style="text-decoration:underline" class="ql-format-button ql-underline">U</button>
+          <button title="Strikethrough" style="text-decoration:line-through" class="ql-format-button ql-strike">S</button>
+          <button title="Link" class="ql-format-button ql-link">Link</button>
+          <button title="Image" class="ql-format-button ql-image">Image</button>
+          <button title="Bullet" class="ql-format-button ql-bullet">&bull;</button>
+          <button title="List" class="ql-format-button ql-list">1.</button>
+          <button title="Save Document" style="font-family:monospace; float: right;" onclick="save()">Save!</button>
+        </div>
+        <div id="editor-container"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="quill.js"></script>
+    <script type="text/javascript" src="../../../js/zepto.min.js"></script>
+    <script type="text/javascript">
+      var editor = new Quill('#editor-container', {
+        modules: {
+          'toolbar': { container: '#formatting-container' },
+          'link-tooltip': true,
+          'image-tooltip': true
+        }
+      });
+      var id = window.location.search.substring(1);
+      var title = "";
+      var loaded = false;
+      var goToFiles = function(){
+        if(confirm("Do you wish to return to file list?\nSave your files first")) window.location.href = "/app/#/my"
+      }
+      $(function(){
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1/documents/read',
+          data: {
+            id: id
+          },
+          success: function(data) {
+            console.log("Load occured successfully.");
+            //console.log(data.data)
+            editor.setHTML(data.data.content);
+            title = data.data.title;
+            loaded = true;
+          },
+          error: function(xhr, type) {
+            console.log("Load error");
+            console.log(xhr);
+            console.log(type);
+            editor.setHTML("ERROR");
+            alert("An error occured!");
+          }
+        });
+      });
+      var save = function(){
+        if(!loaded) throw "DOCUMENT NOT LOADED";
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1/documents/update',
+          data: {
+            id: id,
+            title: title,
+            content: editor.getHTML()
+          },
+          success: function(data) {
+            console.log("Save occured successfully.");
+          },
+          error: function(xhr, type) {
+            console.log("Save error." + xhr + type);
+          }
+        });
+      }
+      /*
+      editor.on('selection-change', function(range) {
+        console.log('selection-change', range)
+      });
+      editor.on('text-change', function(delta, source) {
+        console.log('text-change', delta, source)
+      });
+      */
+    </script>
+  </body>
+</html>
