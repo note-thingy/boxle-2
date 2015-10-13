@@ -43,7 +43,7 @@
           </div>
         {{ for(var prop in it.data) { }}
           <div class="w100 p1 bg-white bt3" > <!--onclick="toggle_visibility('more-{{=it.data[prop]._id}}')"-->
-            <span id="myfiles-title-{{=it.data[prop]._id}}" class="title" onclick="editDoc('{{=it.data[prop]._id}}')" >{{=it.data[prop].title}}</span>
+            <span id="myfiles-title-{{=it.data[prop]._id}}" class="title" onclick="editDoc('{{=it.data[prop]._id}}','{{=it.data[prop].type}}')" >{{=it.data[prop].title}}</span>
             <a class="color-midgrey btn-tiny" style="float: right" href="javascript:toggle_visibility('more-{{=it.data[prop]._id}}')">Toggle Options</a>
            </div>
            <div class="w100 p1 bg-white" style="display:none" id="more-{{=it.data[prop]._id}}">
