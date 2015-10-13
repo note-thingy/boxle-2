@@ -1,4 +1,4 @@
-var editDoc, deleteDoc, newDoc, toggleNewDoc;
+var editDoc, deleteDoc, newDoc, toggleNewDoc, toggleIsPublic, toggle_visibility;
 $(function() {
   var divMain = document.getElementById("main");
   var setMain = function(c) {
@@ -8,7 +8,7 @@ $(function() {
   var tmplFiles = doT.template(document.getElementById("template-files").innerHTML);
   var tmplProfile = doT.template(document.getElementById("template-profile").innerHTML);
 
-  function toggle_visibility(id) {
+  toggle_visibility = function(id) {
     var e = document.getElementById(id);
     if (e.style.display == 'block')
       e.style.display = 'none';
@@ -27,6 +27,30 @@ $(function() {
 
   function notifyConfirm(message) {
     return confirm(message);
+  }
+  
+  toggleIsPublic = function(id) {
+    var v = "off";
+    if(document.getElementById("chk-isPublic-"+id).checked){
+      v = "on"
+    }
+    $.ajax({
+      type: 'POST',
+      url: '/api/v1/documents/value/isPublic',
+      data: {
+        id: id,
+        value: v,
+      },
+      success: function(data) {
+        if(data.status == "success") console.log("isPublic toggle success");
+        else console.log("isPublic toggle error");
+      },
+      error: function(xhr, type) {
+        console.log("isPublic toggle error");
+        console.log(xhr);
+        console.log(type);
+      }
+    });
   }
 
   function loadFileList() {
