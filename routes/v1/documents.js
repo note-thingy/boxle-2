@@ -31,7 +31,7 @@ router.post("/new", function(req,res){
 router.get("/my", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
-  documents.find({owner: req.user}, {title: true, dateupdated: true, tags: true, type: true}).toArray(function(err, docs) {
+  documents.find({owner: req.user}, {title: true, dateupdated: true, tags: true, type: true, isPublic: true}).toArray(function(err, docs) {
     if(err){
       console.log(err);
       res.json({status: "error", messsage: "Error occured. \n"+err})
@@ -56,6 +56,22 @@ router.post("/read", function(req,res){
   });
 });
 
+router.get("/read/public", function(req,res){
+  var db = req.db;
+  var documents = req.db.collection('documents');
+  documents.findOne({_id: req.ObjectId(req.query.id), isPublic: true}, {title: true, content: true, owner: true},function(err, doc) {
+    if(err){
+      console.log(err);
+      res.json({status: "error", messsage: "Error occured. \n"+err});
+    }else if(!doc){
+      res.json({status: "error", messsage: "Error occured. \nNo document found."});
+    }else{
+      res.json({status: "success", data: doc});
+    }
+  });
+});
+
+
 router.post("/update", function(req,res){
   var db = req.db;
   var documents = req.db.collection('documents');
@@ -64,6 +80,44 @@ router.post("/update", function(req,res){
       title:   req.body.title,
       content: req.body.content,
       dateupdated: new Date()
+    }
+  },{upsert:false, multi:false, w:1},function(err, doc) {
+    if(err){
+      console.log(err);
+      res.json({status: "error", messsage: "Error occured. \n"+err});
+    }else if(!doc){
+      res.json({status: "error", messsage: "Error occured. \nNo document found."});
+    }else{
+      if(req.body.r){
+        res.redirect("/"+req.body.r);
+      }else{
+        res.json({status: "success"});
+      }
+    }
+  });
+});
+
+router.get("/value/isPublic", function(req,res){
+  var id = req.query.id;
+  var documents = req.db.collection('documents');
+  documents.findOne({owner: req.user, _id: req.ObjectId(id)}, {isPublic: true}, function(err, docs) {
+    if(err){
+      console.log(err);
+      res.json({status: "error", messsage: "Error occured. \n"+err})
+    }else{
+      res.json({status: "success", data: docs});
+    }
+  });
+});
+
+router.post("/value/isPublic", function(req,res){
+  var documents = req.db.collection('documents');
+  var test = /^true$/i;
+  var value = false;
+  if(req.body.value == "on") value = true;
+  documents.update({owner: req.user, _id: req.ObjectId(req.body.id)}, {
+    $set:{
+      isPublic: value
     }
   },{upsert:false, multi:false, w:1},function(err, doc) {
     if(err){
