@@ -16,7 +16,7 @@
         <li><a href="#/me">Profile</a></li>
       </ul>
     </nav>
-    <main id="main" class="column overflow-hidden">
+    <main id="main" class="column scroll-vertical">
       
     </main>
     <script type="text/html" id="template-home">
@@ -27,10 +27,10 @@
     <script type="text/html" id="template-files">
       <section class="section-padding grid">
         <div class="row">
-          <div id="menu-document-bar" class="w100 p1 bg-white bb3" style="display:block">
+          <div id="menu-document-bar" class="w100 p1 bg-white" style="display:block">
             <a class="color-midgrey btn-tiny" href="javascript:toggleNewDoc()">Create document</a>
           </div>
-          <div id="new-document-bar" class="w100 p1 bg-white bb3" style="display:none">
+          <div id="new-document-bar" class="w100 p1 bg-white" style="display:none">
             <h6 class="inline color-grey">Create a new document</h6>
             Title: 
             <input id="newdoctitle" class="bg-silver" name="title" type="text">
@@ -42,15 +42,15 @@
             <a class="color-midgrey btn-tiny" href="javascript:toggleNewDoc()">Cancel</a>
           </div>
         {{ for(var prop in it.data) { }}
-          <div class="w100 p1 bg-white bb3">
+          <div class="w100 p1 bg-white bt3" > <!--onclick="toggle_visibility('more-{{=it.data[prop]._id}}')"-->
             <span id="myfiles-title-{{=it.data[prop]._id}}" class="title">{{=it.data[prop].title}}</span>
             <a class="color-midgrey btn-tiny" style="float: right" href="javascript:toggle_visibility('more-{{=it.data[prop]._id}}')">Toggle Options</a>
-            <div style="display:none" id="more-{{=it.data[prop]._id}}">
+           </div>
+           <div class="w100 p1 bg-white" style="display:none" id="more-{{=it.data[prop]._id}}">
               <a class="color-midgrey btn-tiny" href="javascript:editDoc('{{=it.data[prop]._id}}','{{=it.data[prop].type}}')">&#9998;</a>
               <a class="color-midgrey btn-tiny" href="javascript:deleteDoc('{{=it.data[prop]._id}}')">&#9587;</a>
               <i>Public document?</i>
               <input title="Toggle whether this document is publicly accessible" type="checkbox" id="chk-isPublic-{{=it.data[prop]._id}}" onclick="toggleIsPublic('{{=it.data[prop]._id}}');" {{? it.data[prop].isPublic }}checked="{{=it.data[prop].isPublic}}"{{?}}/>
-            </div>
           </div>
         {{ } }}
         </div>
