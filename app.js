@@ -156,7 +156,7 @@ if(process.env.PRODUCTION=="true") isProduction = true;
 if(isProduction){
   console.log("PRODUCTION")
   harp.compile(__dirname + "/public", __dirname + "/build", function(){});
-  app.use(express.static(__dirname + "/build", { extensions: true }));
+  app.use(express.static(__dirname + "/build", { extensions: ['html', 'htm'] }));
 }else{
   console.log("NOT PRODUCTION")
   app.use(express.static(__dirname + "/public"));
