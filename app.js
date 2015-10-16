@@ -113,8 +113,6 @@ app.post('/sendtoken',
                   res.send("Error adding user. \n"+err);  
                 }else{
                   callback(null, doc.ops[0]._id);
-                  console.log("DOC:")
-                  console.log(doc)
                 }
               });
             }
