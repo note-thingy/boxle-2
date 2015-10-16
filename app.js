@@ -151,8 +151,18 @@ app.get('/api/v1/me', passwordless.restricted(),
 app.use('/accepted', passwordless.restricted());
 app.use('/app', passwordless.restricted());
 
-app.use(express.static(__dirname + "/public"));
-app.use(harp.mount(__dirname + "/public"));
+var isProduction = false;
+if(process.env.PRODUCTION=="true") isProduction = true;
+if(isProduction){
+  console.log("PRODUCTION")
+  harp.compile(__dirname + "/public", __dirname + "/build", function(){});
+  app.use(express.static(__dirname + "/build"));
+}else{
+  console.log("NOT PRODUCTION")
+  app.use(express.static(__dirname + "/public"));
+  app.use(harp.mount(__dirname + "/public"));  
+}
+
 
 
 app.listen(process.env.PORT||3000);
