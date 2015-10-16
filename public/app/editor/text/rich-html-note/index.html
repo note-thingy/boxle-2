@@ -1,8 +1,7 @@
-
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Home &bull; A Site</title>
+    <title>Editor</title>
     <style>
       body {
         font-family: 'Helvetica', 'Arial', san-serif;
@@ -19,6 +18,7 @@
         margin-right: auto;
         left: 0;
         right: 0;
+        max-width: 100%;
       }
       #formatting-container {
         background-color: #f5f5f5;
@@ -36,10 +36,23 @@
       #editor-wrapper {
         border: 1px solid #aaa;
         box-shadow: 0 0 2px 2px #ddd;
+        height: inherit;
       }
       #btn-save{
         background-color: white
       }
+      @media handheld {
+        #formatting-container{
+          overflow-x: scroll;
+          overflow-y: hidden;
+        }
+      }
+      @media (min-width:960px) {
+        .editor-btns{
+          float: right;
+        }
+      }
+      
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
@@ -48,7 +61,10 @@
     <div id="content-container">
       <div id="editor-wrapper">
         <div id="formatting-container">
-          <button title="Return to files" class="ql-format-button" style="font-family:monospace; float: right;" onclick="goToFiles()">Return to files</button>
+          <span class="editor-btns">
+            <button title="Return to files" class="ql-format-button" style="font-family:monospace;" onclick="goToFiles()">Back</button>
+            <button title="Save Document" style="font-family:monospace;" id="btn-save" onclick="save()">Save</button>
+          </span>
           <select title="Font" class="ql-font">
             <option value="sans-serif" selected>Sans Serif</option>
             <option value="Georgia, serif">Serif</option>
@@ -94,7 +110,6 @@
           <button title="Image" class="ql-format-button ql-image">Image</button>
           <button title="Bullet" class="ql-format-button ql-bullet">&bull;</button>
           <button title="List" class="ql-format-button ql-list">1.</button>
-          <button title="Save Document" style="font-family:monospace; float: right;" id="btn-save" onclick="save()">Save</button>
         </div>
         <div id="editor-container"></div>
       </div>
