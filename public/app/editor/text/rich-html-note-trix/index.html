@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+        <title>Editor</title>
+    <style>
+      body {
+        font-family: 'Helvetica', 'Arial', san-serif;
+        font-size: 13px;
+        padding: 25px;
+      }
+      #content-container {
+        margin: auto;
+        width: 960px;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+      }
+      #formatting-container {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ccc;
+        padding: 5px 12px;
+      }
+      #formatting-container .ql-active,
+      #formatting-container button:hover {
+        color: #008000;
+        font-weight: bold;
+      }
+      #editor-container {
+        height: 600px;
+        box-sizing: border-box;
+      }
+      #edit-area{
+        box-sizing: border-box;
+        height: inherit;
+        width: 100%;
+        box-sizing: inherit;
+        outline: none;
+      }
+      #editor-wrapper {
+        border: 1px solid #aaa;
+        box-shadow: 0 0 2px 2px #ddd;
+        height: inherit;
+      }
+      #btn-save{
+        background-color: white
+      }
+      #edit-area{
+        height: inherit
+      }
+      @media handheld {
+        #formatting-container{
+          overflow-x: scroll;
+          overflow-y: hidden;
+        }
+      }
+      @media (min-width:960px) {
+        .editor-btns{
+          float: right;
+        }
+      }
+      .no-margin{
+        margin: 0 0 0 0;
+      }
+      .no-padding{
+        padding: 0 0 0 0;
+      }
+      .no-border{
+        border: 0 0 0 0;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+      <link rel="stylesheet" type="text/css" href="trix.css">
+  <script type="text/javascript" src="trix.js"></script>
+  </head>
+  <body>
+    <div id="content-container">
+      <div id="editor-wrapper">
+        <div id="formatting-container">
+          <i><button>?</button><input type="text" title="Title" id="title"/></i>
+          <span class="editor-btns">
+            <button title="Return to files" class="ql-format-button" style="font-family:monospace;" onclick="goToFiles()">Back</button>
+            <button title="Save Document" style="font-family:monospace;" id="btn-save" onclick="save()">Save</button>
+          </span>
+        </div>
+        <div class="no-margin no-padding no-border" id="editor-container">
+          <input id="edit-data" type="hidden" name="content" value="">
+          <div class="no-margin no-padding no-border" id="edit-area"></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../../../js/zepto.min.js"></script>
+    <script type="text/javascript" src="shortcuts.js"></script>
+    <script type="text/javascript">
+      var editor = document.getElementById("edit-data");
+      var trixed = document.getElementsByTagName("trix-editor")[0];
+      var id = window.location.search.substring(1);
+      var title = "";
+      var loaded = false;
+      var goToFiles = function(){
+        if(confirm("Do you wish to return to file list?\nSave your files first")) window.location.href = "/app/#/my"
+      }
+      $(function(){
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1/documents/read',
+          data: {
+            id: id
+          },
+          success: function(data) {
+            console.log("Load occured successfully.");
+            //console.log(data.data)
+            editor.value = data.data.content;
+            title = data.data.title;
+            loaded = true;
+            document.getElementById("edit-area").innerHTML = '<trix-editor input="edit-data"></trix-editor>';
+          },
+          error: function(xhr, type) {
+            console.log("Load error");
+            console.log(xhr);
+            console.log(type);
+            editor.innerHTML = "ERROR";
+            alert("An error occured!");
+          }
+        });
+      });
+      var save = function(){
+        if(!loaded) throw "DOCUMENT NOT LOADED";
+        $.ajax({
+          type: 'POST',
+          url: '/api/v1/documents/update',
+          data: {
+            id: id,
+            title: title,
+            content: editor.value
+          },
+          success: function(data) {
+            console.log("Save occured successfully.");
+            document.getElementById("btn-save").style.backgroundColor= "green";
+            document.getElementById("btn-save").style.color= "white";
+            document.getElementById("btn-save").textContent= "Saved!";
+            setTimeout(function(){
+              console.log("Callback activated");
+              document.getElementById("btn-save").style.backgroundColor= "white";
+              document.getElementById("btn-save").style.color= "black";
+              document.getElementById("btn-save").textContent= "Save";
+            }, 1000);
+          },
+          error: function(xhr, type) {
+            console.log("Save error." + xhr + type);
+          }
+        });
+      }
+      shortcut.add("Ctrl+S",function() {
+        console.log("Ctrl+S Keyboard shortcut called")
+        save();
+      });
+
+      /*
+      editor.on('selection-change', function(range) {
+        console.log('selection-change', range)
+      });
+      editor.on('text-change', function(delta, source) {
+        console.log('text-change', delta, source)
+      });
+      */
+    </script>
+  </body>
+</html>
