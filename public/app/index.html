@@ -11,10 +11,10 @@
       <h1 class="m0 color-white"><a class="no-underline" href="#/home">Boxle</a><span class="alpha-badge fs-small italic color-accent">Alpha</span></h1>
       <p class="color-midgrey">An internet experiment.</p>
       <ul class="list-style-none lh9 bt1 border-darkgrey mt2 pt2">
-        <li><a href="#/home">Home</a></li>
-        <li><a href="#/my">All files</a></li>
-        <li><a href="#/me">Profile</a></li>
-        <li><a href="/logout">Logout</a></li>
+        <li><a href="#/home/">Home</a></li>
+        <li><a href="#/my/">All files</a></li>
+        <li><a href="#/me/">Profile</a></li>
+        <li><a href="#/logout/">Logout</a></li>
       </ul>
     </nav>
     <main id="main" class="column scroll-vertical">
@@ -58,12 +58,18 @@
         </div>
       </section>
     </script>
+    <script type="text/html" id="template-message">
+      <section class="section-padding">
+        <h2>{{=it.title}}</h2>
+        {{=it.content}}
+      </section>
+    </script>
     <script type="text/html" id="template-profile">
       <section class="section-padding">
         The profile section has not been implemented yet, though if you wish for data to be removed or modified, then email:
-        <pre>
+        <p style="font-family: monospace">
           isaac.reid.guest@gmail.com
-        </pre>
+        </p>
       </section>
     </script>
     <script src="js/routie.min.js"></script>

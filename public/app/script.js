@@ -7,6 +7,7 @@ $(function() {
   var tmplHome = document.getElementById("template-home").innerHTML;
   var tmplFiles = doT.template(document.getElementById("template-files").innerHTML);
   var tmplProfile = doT.template(document.getElementById("template-profile").innerHTML);
+  var tmplMessage = doT.template(document.getElementById("template-message").innerHTML);
 
   toggle_visibility = function(id) {
     var e = document.getElementById(id);
@@ -53,10 +54,12 @@ $(function() {
     });
   }
 
-  function loadFileList() {
+  function loadFileList(options) {
+    var opt = options;
+    var requrl = '/api/v1/documents/my?'+opt.query
     $.ajax({
       type: 'GET',
-      url: '/api/v1/documents/my',
+      url: requrl,
       success: function(data) {
         setMain(tmplFiles(data));
       },
@@ -129,13 +132,19 @@ $(function() {
     console.log("No hash on launch, sending to #/home");
     window.location.hash = "#/home"
   }
-  routie('/home', function() {
+  routie('/home/', function() {
     setMain(tmplHome);
   });
-  routie('/my', function() {
-    loadFileList();
+  routie('/my/*', function(params) {
+    loadFileList({query: params});
   });
-  routie('/me', function() {
+  routie('/me/', function() {
     setMain(tmplProfile());
+  });
+  routie('/logout/', function() {
+    setMain(tmplMessage({
+      title: "Logout",
+      content: 'If you wish to logout, click <a href="/logout">here</a>. Make sure all your stuff is saved first.'
+    }));
   });
 });
