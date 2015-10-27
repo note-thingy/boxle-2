@@ -1,0 +1,39 @@
+{
+  "name": "Boxle-2",
+  "description": "Some basic notes app thing.",
+  "keywords": [
+    "productivity",
+    "notes",
+    "node"
+  ],
+  "website": "https://github.com/note-thingy/boxle-2",
+  "repository": "https://github.com/note-thingy/boxle-2",
+  /*"logo": "https://github.com/note-thingy/boxle-2/logo.svg",*/
+  "success_url": "/",
+  "env": {
+    "DBURL": {
+      "description": "The mongodb:// url of the database to use.",
+      "value": "mongodb://..."
+    },
+    "EMAILUSER": {
+      "description": "SMTP username for your email server.",
+      "value": "user"
+    },
+    "EMAILPASS": {
+      "description": "SMTP password for your email server.",
+      "value": "pass"
+    },
+    "EMAILHOST": {
+      "description": "SMTP host for your email server.",
+      "value": "smtp.mandrillapp.com"
+    },
+    "HOST": {
+      "description": "The adress at which people access the site.",
+      "value": "http://myappname.herokuapp.com"
+    },
+    "WEB_CONCURRENCY": {
+      "description": "The number of processes to run.",
+      "value": "1"
+    }
+  }
+}
