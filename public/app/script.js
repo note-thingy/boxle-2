@@ -129,8 +129,8 @@ $(function() {
     }
   }
   if (!window.location.hash || window.location.hash.length < 2) {
-    console.log("No hash on launch, sending to #/home");
-    window.location.hash = "#/home"
+    console.log("No hash on launch, sending to #/home/");
+    window.location.hash = "#/home/"
   }
   routie('/home/', function() {
     setMain(tmplHome);
