@@ -21,7 +21,7 @@
   "scripts": {
     "start": "node app"
   },
-  engines: {
+  "engines": {
     "node": "4.x.x"
   }
 }
