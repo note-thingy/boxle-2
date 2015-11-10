@@ -135,6 +135,9 @@ $(function() {
   routie('/home/', function() {
     setMain(tmplHome);
   });
+  routie('/my', function() {
+    routie('/my/');
+  });
   routie('/my/*', function(params) {
     loadFileList({query: params});
   });

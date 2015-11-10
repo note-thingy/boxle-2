@@ -1,1 +1,1 @@
-window.onload=function(){window.location.href="/app/"}
+window.location.href="/app/";
