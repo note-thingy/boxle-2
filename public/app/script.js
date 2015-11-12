@@ -138,6 +138,9 @@ $(function() {
   routie('/my', function() {
     routie('/my/');
   });
+  routie('/my/', function() {
+    loadFileList({query: ""});
+  });
   routie('/my/*', function(params) {
     loadFileList({query: params});
   });
