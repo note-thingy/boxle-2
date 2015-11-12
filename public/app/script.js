@@ -1,7 +1,7 @@
-var editDoc, deleteDoc, newDoc, toggleNewDoc, toggleIsPublic, toggle_visibility;
+var setMain, editDoc, deleteDoc, newDoc, toggleNewDoc, toggleIsPublic, toggle_visibility;
 $(function() {
   var divMain = document.getElementById("main");
-  var setMain = function(c) {
+  setMain = function(c) {
     divMain.innerHTML = c;
   }
   var tmplHome = document.getElementById("template-home").innerHTML;
@@ -138,10 +138,10 @@ $(function() {
   routie('/my', function() {
     routie('/my/');
   });
-  routie('/my/', function() {
-    loadFileList({query: ""});
-  });
-  routie('/my/*', function(params) {
+ /* routie('/my/', function() {
+    loadFileList({query: '~'});
+  });*/
+  routie('/my/?*', function(params) {
     loadFileList({query: params});
   });
   routie('/me/', function() {
