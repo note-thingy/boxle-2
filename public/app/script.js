@@ -136,7 +136,7 @@ $(function() {
     setMain(tmplHome);
   });
   routie('/my', function() {
-    routie('/my/');
+    routie('/my~');
   });
  /* routie('/my/', function() {
     loadFileList({query: '~'});
